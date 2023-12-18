@@ -11,21 +11,6 @@ import {
 
 export const mysqlTable = mysqlTableCreator((name) => `modulation_${name}`);
 
-export const posts = mysqlTable(
-  "post",
-  {
-    id: serial("id").primaryKey(),
-    name: varchar("name", { length: 256 }),
-    createdAt: timestamp("created_at")
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updatedAt").onUpdateNow(),
-  },
-  (example) => ({
-    nameIndex: index("name_idx").on(example.name),
-  }),
-);
-
 export const episodes = mysqlTable(
   "episode",
   {
@@ -68,7 +53,7 @@ export const albums = mysqlTable(
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 256 }),
     artistId: int("artist_id"),
-    genreId: int("artist_id"),
+    genreId: int("genre_id"),
     releasedAt: date("released_at"),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
@@ -134,11 +119,11 @@ export const relAlbumsEpisodes = mysqlTable("rel_albums_episodes", {
 export const relAlbumsEpisodesRelations = relations(
   relAlbumsEpisodes,
   ({ one }) => ({
-    artist: one(albums, {
+    album: one(albums, {
       fields: [relAlbumsEpisodes.albumId],
       references: [albums.id],
     }),
-    genre: one(episodes, {
+    episode: one(episodes, {
       fields: [relAlbumsEpisodes.episodeId],
       references: [episodes.id],
     }),
