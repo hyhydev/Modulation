@@ -29,8 +29,8 @@ export default function RootLayout({
         <body
           className={`flex-grow-1 overflow-auto font-sans ${inter.variable}`}
         >
-          <Header />
           <TRPCReactProvider cookies={cookies().toString()}>
+            <Header />
             {children}
           </TRPCReactProvider>
         </body>
