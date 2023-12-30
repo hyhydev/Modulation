@@ -31,11 +31,12 @@ export const episodes = mysqlTable(
   }),
 );
 
-export const episodesRelations = relations(episodes, ({ one }) => ({
+export const episodesRelations = relations(episodes, ({ one, many }) => ({
   mix: one(mixes, {
     fields: [episodes.mixId],
     references: [mixes.id],
   }),
+  albums: many(albums),
 }));
 
 export const mixes = mysqlTable("mix", {
@@ -54,6 +55,8 @@ export const albums = mysqlTable(
     name: varchar("name", { length: 256 }),
     artistId: int("artist_id"),
     genreId: int("genre_id"),
+    episodeId: int("episode_id"),
+    episodeType: varchar("episode_type", { length: 256 }),
     releasedAt: date("released_at"),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
@@ -73,6 +76,10 @@ export const albumsRelations = relations(albums, ({ one }) => ({
   genre: one(genres, {
     fields: [albums.genreId],
     references: [genres.id],
+  }),
+  episode: one(episodes, {
+    fields: [albums.episodeId],
+    references: [episodes.id],
   }),
 }));
 
@@ -103,29 +110,5 @@ export const genres = mysqlTable(
   },
   (genre) => ({
     nameIndex: index("name_idx").on(genre.name),
-  }),
-);
-
-export const relAlbumsEpisodes = mysqlTable("rel_albums_episodes", {
-  id: serial("id").primaryKey(),
-  albumId: int("album_id"),
-  episodeId: int("episode_id"),
-  createdAt: timestamp("created_at")
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: timestamp("updatedAt").onUpdateNow(),
-});
-
-export const relAlbumsEpisodesRelations = relations(
-  relAlbumsEpisodes,
-  ({ one }) => ({
-    album: one(albums, {
-      fields: [relAlbumsEpisodes.albumId],
-      references: [albums.id],
-    }),
-    episode: one(episodes, {
-      fields: [relAlbumsEpisodes.episodeId],
-      references: [episodes.id],
-    }),
   }),
 );

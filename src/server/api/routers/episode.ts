@@ -1,35 +1,47 @@
+import { eq } from "drizzle-orm";
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  hyhyProtectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
+import { episodes } from "~/server/db/schema";
 
 export const episodeRouter = createTRPCRouter({
   get: publicProcedure.query(({ ctx }) => {
     return ctx.db.query.episodes.findMany({
       orderBy: (episodes, { desc }) => [desc(episodes.releasedAt)],
+      with: {
+        mix: true,
+        albums: true,
+      },
     });
   }),
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
+  create: hyhyProtectedProcedure
+    .input(
+      z.object({
+        name: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.insert(episodes).values({
+        name: input.name,
+      });
     }),
-
-  // create: publicProcedure
-  //   .input(z.object({ name: z.string().min(1) }))
-  //   .mutation(async ({ ctx, input }) => {
-  //     // simulate a slow db call
-  //     await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  //     await ctx.db.insert(posts).values({
-  //       name: input.name,
-  //     });
-  //   }),
-
-  // getLatest: publicProcedure.query(({ ctx }) => {
-  //   return ctx.db.query.posts.findFirst({
-  //     orderBy: (posts, { desc }) => [desc(posts.createdAt)],
-  //   });
-  // }),
+  update: hyhyProtectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        name: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .update(episodes)
+        .set({
+          name: input.name,
+        })
+        .where(eq(episodes.id, input.id));
+    }),
 });
