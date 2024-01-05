@@ -67,7 +67,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
  */
 export const createTRPCRouter = t.router;
 
-const enforceUserIsHyhy = t.middleware(({ next }) => {
+const enforceUserIsHyhy = t.middleware(async ({ next }) => {
   const { user, session } = auth();
   if (user?.username !== "hyhy") {
     throw new TRPCError({ code: "UNAUTHORIZED", message: "Not an admin" });

@@ -3,11 +3,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 // import { Edit, Plus, Type } from "lucide-react";
 import { Edit, Plus } from "lucide-react";
-import { Form, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useState } from "react";
 import { Button } from "~/ui/components/ui/button";
 import {
+  Form,
   FormField,
   FormItem,
   FormLabel,
@@ -15,8 +16,13 @@ import {
   FormMessage,
 } from "~/ui/components/ui/form";
 import { Input } from "~/ui/components/ui/input";
-import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog";
-import { DialogHeader, DialogFooter } from "~/ui/components/ui/dialog";
+import {
+  DialogHeader,
+  DialogFooter,
+  DialogContent,
+  DialogTitle,
+  Dialog,
+} from "~/ui/components/ui/dialog";
 import { api } from "~/trpc/react";
 // import {
 //   Select,
@@ -25,8 +31,8 @@ import { api } from "~/trpc/react";
 //   SelectContent,
 //   SelectItem,
 // } from "@radix-ui/react-select";
-// import { type episodes } from "~/server/db/schema";
-// import { type InferSelectModel } from "drizzle-orm";
+import { type episodes } from "~/server/db/schema";
+import { type InferSelectModel } from "drizzle-orm";
 
 const formSchema = z.object({
   id: z.number().optional(),
@@ -46,8 +52,14 @@ export function EpisodeForm({ id }: EpisodeFormProps) {
     onSuccess: () => utils.episode.invalidate(),
   });
 
-  // const form = useForm<InferSelectModel<typeof episodes>>({
-  const form = useForm<{ id?: number; name: string }>({
+  type NonNull<Type> = {
+    [Property in keyof Type as Property]: NonNullable<Type[Property]>;
+  };
+
+  type EpisodesForm = NonNull<InferSelectModel<typeof episodes>>;
+
+  const form = useForm<EpisodesForm>({
+    // const form = useForm<{ id?: number; name: string }>({
     resolver: zodResolver(formSchema),
     // defaultValues: {
     //   name,
@@ -62,7 +74,7 @@ export function EpisodeForm({ id }: EpisodeFormProps) {
     }
     if (!!id) {
       updateEpisode.mutate({
-        id,
+        // id,
         ...form.getValues(),
       });
     } else {
@@ -84,13 +96,16 @@ export function EpisodeForm({ id }: EpisodeFormProps) {
         onClose();
         setOpen(false);
       }}
+      modal={true}
     >
       <Button size="icon" variant="ghost" onClick={() => setOpen(true)}>
         {id ? <Edit size={16} /> : <Plus />}
       </Button>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{id ? `Update Play ${id}` : "Create Play"}</DialogTitle>
+          <DialogTitle>
+            {id ? `Update Episode ${id}` : "Create Episode"}
+          </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form className="grid grid-cols-2 gap-4">
@@ -99,7 +114,7 @@ export function EpisodeForm({ id }: EpisodeFormProps) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Play Name *</FormLabel>
+                  <FormLabel>Episode Name *</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -293,7 +308,7 @@ export function EpisodeForm({ id }: EpisodeFormProps) {
               setOpen(false);
             }}
           >
-            Save Play
+            Save Episode
           </Button>
         </DialogFooter>
       </DialogContent>
