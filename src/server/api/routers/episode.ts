@@ -32,7 +32,7 @@ export const episodeRouter = createTRPCRouter({
   update: hyhyProtectedProcedure
     .input(
       z.object({
-        id: z.number(),
+        id: z.string(),
         name: z.string(),
       }),
     )

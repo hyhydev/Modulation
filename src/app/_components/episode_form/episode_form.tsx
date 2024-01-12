@@ -35,7 +35,7 @@ import { type episodes } from "~/server/db/schema";
 import { type InferSelectModel } from "drizzle-orm";
 
 const formSchema = z.object({
-  id: z.number().optional(),
+  id: z.string().optional(),
   name: z.string().min(1),
 });
 

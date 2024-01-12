@@ -4,17 +4,19 @@ import {
   index,
   int,
   mysqlTableCreator,
-  serial,
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
+import { createId } from "@paralleldrive/cuid2";
 
 export const mysqlTable = mysqlTableCreator((name) => `modulation_${name}`);
 
 export const episodes = mysqlTable(
   "episode",
   {
-    id: serial("id").primaryKey(),
+    id: varchar("id", { length: 128 })
+      .$defaultFn(() => createId())
+      .primaryKey(),
     name: varchar("name", { length: 256 }),
     number: int("number"),
     imageUrl: varchar("image_url", { length: 256 }),
@@ -40,7 +42,9 @@ export const episodesRelations = relations(episodes, ({ one, many }) => ({
 }));
 
 export const mixes = mysqlTable("mix", {
-  id: serial("id").primaryKey(),
+  id: varchar("id", { length: 128 })
+    .$defaultFn(() => createId())
+    .primaryKey(),
   spotifyUrl: varchar("spotify_url", { length: 256 }),
   createdAt: timestamp("created_at")
     .default(sql`CURRENT_TIMESTAMP`)
@@ -51,7 +55,9 @@ export const mixes = mysqlTable("mix", {
 export const albums = mysqlTable(
   "album",
   {
-    id: serial("id").primaryKey(),
+    id: varchar("id", { length: 128 })
+      .$defaultFn(() => createId())
+      .primaryKey(),
     name: varchar("name", { length: 256 }),
     artistId: int("artist_id"),
     genreId: int("genre_id"),
@@ -86,7 +92,9 @@ export const albumsRelations = relations(albums, ({ one }) => ({
 export const artists = mysqlTable(
   "artist",
   {
-    id: serial("id").primaryKey(),
+    id: varchar("id", { length: 128 })
+      .$defaultFn(() => createId())
+      .primaryKey(),
     name: varchar("name", { length: 256 }),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
@@ -101,7 +109,9 @@ export const artists = mysqlTable(
 export const genres = mysqlTable(
   "genre",
   {
-    id: serial("id").primaryKey(),
+    id: varchar("id", { length: 128 })
+      .$defaultFn(() => createId())
+      .primaryKey(),
     name: varchar("name", { length: 256 }),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
