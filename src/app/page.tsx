@@ -1,5 +1,5 @@
-/* eslint-disable @next/next/no-img-element */
 import { type InferSelectModel } from "drizzle-orm";
+import Image from "next/image";
 import { type mixes, type albums } from "~/server/db/schema";
 import { api } from "~/trpc/server";
 
@@ -55,7 +55,13 @@ const MainArticle = ({
   return (
     <article className="my-8 flex flex-row shadow">
       <a href="#" className="w-1/4 hover:opacity-75">
-        <img src={imageUrl ?? ""} />
+        <Image
+          src={imageUrl ?? ""}
+          width={1000}
+          height={1000}
+          alt={`Episode ${number} cover image`}
+          priority
+        />
       </a>
       <div className="flex flex-col justify-start bg-white p-6">
         <a href="#" className="pb-4 text-sm font-bold uppercase text-blue-700">
@@ -92,7 +98,12 @@ const Article = ({
       <div className="flex flex-col">
         <div className="flex flex-row">
           <a href="#" className="hover:opacity-75">
-            <img src={imageUrl ?? ""} />
+            <Image
+              src={imageUrl ?? ""}
+              width={300}
+              height={300}
+              alt={`Episode ${number} cover image`}
+            />
           </a>
           <div className="flex flex-col justify-start bg-white p-6">
             <a
