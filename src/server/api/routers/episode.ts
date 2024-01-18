@@ -13,7 +13,6 @@ export const episodeRouter = createTRPCRouter({
     return ctx.db.query.episodes.findMany({
       orderBy: (episodes, { desc }) => [desc(episodes.releasedAt)],
       with: {
-        mix: true,
         albums: true,
       },
     });

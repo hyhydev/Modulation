@@ -1,6 +1,6 @@
 import { type InferSelectModel } from "drizzle-orm";
 import Image from "next/image";
-import { type mixes, type albums } from "~/server/db/schema";
+import { type albums } from "~/server/db/schema";
 import { api } from "~/trpc/server";
 
 export default async function Home() {
@@ -40,9 +40,9 @@ type ArticleProps = {
   number: number | null;
   imageUrl: string | null;
   spotifyUrl: string | null;
+  // mixUrl: string | null;
   releasedAt: Date | null;
   albums: InferSelectModel<typeof albums>[];
-  mix: InferSelectModel<typeof mixes> | null;
 };
 
 const MainArticle = ({

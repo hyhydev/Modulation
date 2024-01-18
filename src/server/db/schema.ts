@@ -21,36 +21,21 @@ export const episodes = mysqlTable(
     number: int("number"),
     imageUrl: varchar("image_url", { length: 256 }),
     spotifyUrl: varchar("spotify_url", { length: 256 }),
-    mixId: int("mix_id"),
+    mixUrl: varchar("mix_url", { length: 256 }),
     releasedAt: date("released_at"),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updatedAt").onUpdateNow(),
+    updatedAt: timestamp("updated_at").onUpdateNow(),
   },
   (episode) => ({
     nameIndex: index("name_idx").on(episode.name),
   }),
 );
 
-export const episodesRelations = relations(episodes, ({ one, many }) => ({
-  mix: one(mixes, {
-    fields: [episodes.mixId],
-    references: [mixes.id],
-  }),
+export const episodesRelations = relations(episodes, ({ many }) => ({
   albums: many(albums),
 }));
-
-export const mixes = mysqlTable("mix", {
-  id: varchar("id", { length: 128 })
-    .$defaultFn(() => createId())
-    .primaryKey(),
-  spotifyUrl: varchar("spotify_url", { length: 256 }),
-  createdAt: timestamp("created_at")
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: timestamp("updatedAt").onUpdateNow(),
-});
 
 export const albums = mysqlTable(
   "album",
@@ -59,15 +44,15 @@ export const albums = mysqlTable(
       .$defaultFn(() => createId())
       .primaryKey(),
     name: varchar("name", { length: 256 }),
-    artistId: int("artist_id"),
-    genreId: int("genre_id"),
-    episodeId: int("episode_id"),
+    artistId: varchar("artist_id", { length: 128 }),
+    genreId: varchar("genre_id", { length: 128 }),
+    episodeId: varchar("episode_id", { length: 128 }),
     episodeType: varchar("episode_type", { length: 256 }),
     releasedAt: date("released_at"),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updatedAt").onUpdateNow(),
+    updatedAt: timestamp("updated_at").onUpdateNow(),
   },
   (album) => ({
     nameIndex: index("name_idx").on(album.name),
@@ -99,7 +84,7 @@ export const artists = mysqlTable(
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updatedAt").onUpdateNow(),
+    updatedAt: timestamp("updated_at").onUpdateNow(),
   },
   (artist) => ({
     nameIndex: index("name_idx").on(artist.name),
@@ -116,7 +101,7 @@ export const genres = mysqlTable(
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updatedAt").onUpdateNow(),
+    updatedAt: timestamp("updated_at").onUpdateNow(),
   },
   (genre) => ({
     nameIndex: index("name_idx").on(genre.name),
