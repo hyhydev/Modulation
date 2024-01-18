@@ -12,7 +12,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@clerk/nextjs": "^4.29.1",
+    "@clerk/nextjs": "^4.29.3",
     "@hookform/resolvers": "^3.3.3",
     "@paralleldrive/cuid2": "^2.2.2",
     "@planetscale/database": "^1.11.0",
